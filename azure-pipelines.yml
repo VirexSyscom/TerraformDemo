@@ -10,6 +10,7 @@ steps:
   inputs:
     script: |
        pwd
+       ls
        echo "Test"
 - task: TerraformTask@5
   displayName: terraform init
