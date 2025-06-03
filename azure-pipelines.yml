@@ -5,13 +5,6 @@ pool:
   name: 'LinuxAgents'
 
 steps:
-- task: CmdLine@2
-  displayName: Download terraform file
-  inputs:
-    script: |
-       pwd
-       ls
-       echo "Test"
 - task: TerraformTask@5
   displayName: terraform init
   inputs:
