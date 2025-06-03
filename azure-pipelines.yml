@@ -1,19 +1,33 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: 'LinuxAgents'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: TerraformTask@5
+  displayName: terraform init
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    backendAzureRmUseEntraIdForAuthentication: false
+    backendServiceArm: 'TerraformARM'
+    backendAzureRmOverrideSubscriptionID: '$(SubID)'
+    backendAzureRmResourceGroupName: '$(SARG)'
+    backendAzureRmStorageAccountName: '$(SAName)'
+    backendAzureRmContainerName: '$(CName)'
+    backendAzureRmKey: '$(SAKey)'
+- task: TerraformTask@5
+  displayName: terraform plan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    environmentServiceNameAzureRM: 'TerraformARM'
+    environmentAzureRmOverrideSubscriptionID: '$(SubID)'
+- task: TerraformTask@5
+  displayName: terraform apply
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    environmentServiceNameAzureRM: 'TerraformARM'
+    environmentAzureRmOverrideSubscriptionID: '$(SubID)'
